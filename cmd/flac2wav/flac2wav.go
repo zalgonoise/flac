@@ -71,7 +71,7 @@ func flac2wav(path string, force bool) error {
 		// Decode FLAC audio samples.
 		frame, err := stream.ParseNext()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			return errors.WithStack(err)
