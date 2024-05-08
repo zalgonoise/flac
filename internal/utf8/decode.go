@@ -117,7 +117,7 @@ func Decode(r io.Reader) (x uint64, err error) {
 		x <<= 6
 		c, err := ioutilx.ReadByte(r)
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				return 0, io.ErrUnexpectedEOF
 			}
 			return 0, err
