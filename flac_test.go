@@ -1,6 +1,7 @@
 package flac_test
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -69,7 +70,7 @@ func TestSeek(t *testing.T) {
 			}
 
 			_, err = stream.ParseNext()
-			if err != nil && err != io.EOF {
+			if err != nil && !errors.Is(err, io.EOF) {
 				t.Fatal(err)
 			}
 		})

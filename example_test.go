@@ -3,6 +3,7 @@ package flac_test
 import (
 	"bytes"
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -45,7 +46,7 @@ func ExampleOpen() {
 		// subframe per audio channel.
 		frame, err := stream.ParseNext()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			log.Fatal(err)

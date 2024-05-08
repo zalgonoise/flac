@@ -2,6 +2,7 @@ package flac_test
 
 import (
 	"bytes"
+	"errors"
 	"io"
 	"io/ioutil"
 	"testing"
@@ -142,7 +143,7 @@ func TestEncode(t *testing.T) {
 			for {
 				frame, err := stream.ParseNext()
 				if err != nil {
-					if err == io.EOF {
+					if errors.Is(err, io.EOF) {
 						break
 					}
 					t.Fatalf("%q: unable to parse audio frame of FLAC stream; %v", path, err)
@@ -196,7 +197,7 @@ func TestEncodeComment(t *testing.T) {
 	for {
 		frame, err := src.ParseNext()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			t.Fatalf("%q: unable to parse audio frame of FLAC stream; %v", path, err)

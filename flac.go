@@ -84,7 +84,7 @@ func New(r io.Reader) (stream *Stream, err error) {
 	// Skip the remaining metadata blocks.
 	for !block.IsLast {
 		block, err = meta.New(br)
-		if err != nil && err != meta.ErrReservedType {
+		if err != nil && !errors.Is(err, meta.ErrReservedType) {
 			return stream, err
 		}
 		if err = block.Skip(); err != nil {
@@ -110,7 +110,7 @@ func NewSeek(rs io.ReadSeeker) (stream *Stream, err error) {
 	for !block.IsLast {
 		block, err = meta.Parse(stream.r)
 		if err != nil {
-			if err != meta.ErrReservedType {
+			if !errors.Is(err, meta.ErrReservedType) {
 				return stream, err
 			}
 			if err = block.Skip(); err != nil {
@@ -229,7 +229,7 @@ func Parse(r io.Reader) (stream *Stream, err error) {
 	for !block.IsLast {
 		block, err = meta.Parse(br)
 		if err != nil {
-			if err != meta.ErrReservedType {
+			if !errors.Is(err, meta.ErrReservedType) {
 				return stream, err
 			}
 			// Skip the body of unknown (reserved) metadata blocks, as stated by
@@ -405,7 +405,7 @@ func (stream *Stream) makeSeekTable() (err error) {
 		}
 		f, err := stream.ParseNext()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			return err
