@@ -3,6 +3,7 @@ package frame_test
 import (
 	"bytes"
 	"crypto/md5"
+	"errors"
 	"io"
 	"testing"
 
@@ -115,7 +116,7 @@ func TestFrameHash(t *testing.T) {
 			for frameNum := 0; ; frameNum++ {
 				frame, err := stream.ParseNext()
 				if err != nil {
-					if err == io.EOF {
+					if errors.Is(err, io.EOF) {
 						break
 					}
 					t.Errorf("path=%q, frameNum=%d: error while parsing frame; %v", g.path, frameNum, err)
@@ -147,7 +148,7 @@ func BenchmarkFrameParse(b *testing.B) {
 		for {
 			_, err := stream.ParseNext()
 			if err != nil {
-				if err == io.EOF {
+				if errors.Is(err, io.EOF) {
 					break
 				}
 				stream.Close()
@@ -173,7 +174,7 @@ func BenchmarkFrameHash(b *testing.B) {
 		for {
 			frame, err := stream.ParseNext()
 			if err != nil {
-				if err == io.EOF {
+				if errors.Is(err, io.EOF) {
 					break
 				}
 				stream.Close()
